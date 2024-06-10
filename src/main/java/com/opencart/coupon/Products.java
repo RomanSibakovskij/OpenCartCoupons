@@ -1,5 +1,6 @@
 package com.opencart.coupon;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -23,6 +24,9 @@ public class Products extends BasePage {
     @FindBy(css = "#product-list [class='col mb-3'] .product-thumb h4 > a")
     private List<WebElement> productNames;
 
+    @FindBy(css = "#product-list .product-thumb")
+    private List<WebElement> products;
+    /*
     public List<String> getProductNames() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(6));
         wait.until(ExpectedConditions.visibilityOfAllElements(productNames));
@@ -32,7 +36,7 @@ public class Products extends BasePage {
         }
         return names;
     }
-
+        */
     // Method to retrieve list of products
     private List<Product> getProductList(WebDriver driver) {
         HomePageWithNoSetProduct homePage = new HomePageWithNoSetProduct(driver);
@@ -44,8 +48,10 @@ public class Products extends BasePage {
         wait.until(ExpectedConditions.visibilityOfAllElements(productNames));
 
         List<Product> productList = new ArrayList<>();
-        for (String productName : getProductNames()) {
-            productList.add(new Product(productName));
+        for (WebElement product : products) {
+            String name = product.findElement(By.cssSelector("h4 > a")).getText();
+            String price = product.findElement(By.cssSelector(".price")).getText();
+            productList.add(new Product(name));
         }
         return productList;
     }

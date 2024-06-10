@@ -37,6 +37,12 @@ public class CheckoutPage extends BasePage{
     @FindBy(css = "tfoot#checkout-total > tr:nth-of-type(5) > td:nth-of-type(2)")
     private WebElement totalValue;
 
+    @FindBy(css = ".alert.alert-danger.alert-dismissible")
+    private WebElement errorMessage;
+
+    @FindBy(css = "#alert")
+    private WebElement successMessage;
+
     public CheckoutPage(WebDriver driver) {
         super(driver);
     }
@@ -51,7 +57,7 @@ public class CheckoutPage extends BasePage{
 
         // Scroll into view if necessary
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", couponCodeDiscountValue);
-
+        inputCouponCode.clear();
         inputCouponCode.sendKeys("1111");
     }
 
@@ -61,8 +67,38 @@ public class CheckoutPage extends BasePage{
 
         // Scroll into view if necessary
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", couponCodeDiscountValue);
-
+        inputCouponCode.clear();
         inputCouponCode.sendKeys("2222");
+    }
+
+    public void setInputExpiredCouponCodeIntoInputField(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(8));
+        wait.until(ExpectedConditions.visibilityOf(inputCouponCode));
+
+        // Scroll into view if necessary
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", couponCodeDiscountValue);
+        inputCouponCode.clear();
+        inputCouponCode.sendKeys("5555");
+    }
+
+    public void setInputInvalidCouponCodeIntoInputField(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(8));
+        wait.until(ExpectedConditions.visibilityOf(inputCouponCode));
+
+        // Scroll into view if necessary
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", couponCodeDiscountValue);
+        inputCouponCode.clear();
+        inputCouponCode.sendKeys("7777");
+    }
+
+    public void setEmptyInputCouponCodeIntoInputField(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(8));
+        wait.until(ExpectedConditions.visibilityOf(inputCouponCode));
+
+        // Scroll into view if necessary
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", couponCodeDiscountValue);
+        inputCouponCode.clear();
+        inputCouponCode.sendKeys("");
     }
 
     public void clickOnApplyCouponButton(){
@@ -114,7 +150,15 @@ public class CheckoutPage extends BasePage{
     public String getTotalValue() {
         return totalValue.getText();
     }
+    public String getErrorMessage() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(8));
+        wait.until(ExpectedConditions.visibilityOf(errorMessage));
+        return errorMessage.getText();
+    }
 
-
-
+    public String getSuccessMessage() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.visibilityOf(successMessage));
+        return successMessage.getText();
+    }
 }

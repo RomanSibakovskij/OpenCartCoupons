@@ -20,6 +20,8 @@ public class HomePage extends BasePage{
         searchBarInput.sendKeys("Palm Treo Pro");
     }
 
+    public void inputNonExistentSearchQueryIntoSearchBar(){searchBarInput.sendKeys("Kalm");}
+
     public void clickOnSearchButton(){
         searchButtonClick.click();
     }

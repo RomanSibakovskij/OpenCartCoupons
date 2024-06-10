@@ -34,6 +34,9 @@ public class SearchPage extends BasePage{
     @FindBy(css = ".dropdown-menu.dropdown-menu-end.p-2.show p > a:nth-of-type(1)")
     private WebElement viewCartLinkInShoppingButton;
 
+    @FindBy(xpath = "//*//div[@id='content']/p[.='There is no product that matches the search criteria.']")
+    private WebElement noResultsMessage;
+
     public SearchPage(WebDriver driver) {
         super(driver);
     }
@@ -83,5 +86,44 @@ public class SearchPage extends BasePage{
         return parts[1].trim();
     }
 
+    public boolean isNoResultsMessageDisplayed() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(6));
+        try {
+            wait.until(ExpectedConditions.visibilityOf(noResultsMessage));
+            return noResultsMessage.isDisplayed();
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
+
+    public String noResultMessageContent(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(6));
+        wait.until(ExpectedConditions.visibilityOf(noResultsMessage));
+        return noResultsMessage.getText();
+    }
+
+    public void simulateOutOfStock() {
+        // 'disable' the add to cart button
+        ((JavascriptExecutor) driver).executeScript("arguments[0].disabled = true;", clickAddToCartButton);
+
+        // innerHTML for displaying "Out of Stock" message
+        ((JavascriptExecutor) driver).executeScript("arguments[0].innerHTML = 'Out of Stock';", clickAddToCartButton);
+
+        System.out.println("Simulated out of stock scenario: Add to cart button disabled and 'Out of Stock' message displayed.");
+    }
+
+    public void simulateBrokenButton() {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].remove();", clickAddToCartButton);
+        System.out.println("Simulated broken button scenario: Shopping cart button is non-operational");
+    }
+
+    public boolean isAddToCartButtonPresent() {
+        try {
+            driver.findElement(By.cssSelector("#product-list [class='col mb-3']:nth-of-type(2) .button-group [type='submit']:nth-of-type(1)"));
+            return true;
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
 
 }

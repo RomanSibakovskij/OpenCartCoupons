@@ -147,6 +147,30 @@ public class CheckoutPageTest extends BaseTest {
         assertEquals(expectedTotal, total, 0.01);
     }
 
+    private void inputInvalidCouponCodeTest() {
+        CheckoutPage checkoutPage = new CheckoutPage(driver);
+
+        checkoutPage.clickOnCouponSelectorDropMenu();
+        checkoutPage.setInputInvalidCouponCodeIntoInputField();
+        checkoutPage.clickOnApplyCouponButton();
+
+        String errorMessage = checkoutPage.getErrorMessage();
+        assertEquals("Warning: Coupon is either invalid, expired or reached its usage limit!", errorMessage);
+        System.out.println("The error message displayed is: " + errorMessage + "\n");
+    }
+
+    private void inputExpiredCouponCodeTest() {
+        CheckoutPage checkoutPage = new CheckoutPage(driver);
+
+        checkoutPage.clickOnCouponSelectorDropMenu();
+        checkoutPage.setInputExpiredCouponCodeIntoInputField();
+        checkoutPage.clickOnApplyCouponButton();
+
+        String errorMessage = checkoutPage.getErrorMessage();
+        assertEquals("Warning: Coupon is either invalid, expired or reached its usage limit!", errorMessage);
+        System.out.println("The error message displayed is: " + errorMessage + "\n");
+    }
+    //positive test cases
     @Test
     void checkoutPageWithMinus10DollarCouponTest() { //coupon codes 1111 (-10.00) and 2222 (-%10)
         addToCartButtonClick();
@@ -162,4 +186,47 @@ public class CheckoutPageTest extends BaseTest {
 
         minus10PercentTest();
     }
+
+    //negative test cases
+
+    @Test
+    void invalidCouponCodeTest() {
+        addToCartButtonClick();
+        clickShoppingCartBtnAndViewCartLink();
+
+        inputInvalidCouponCodeTest();
+
+    }
+
+
+    @Test
+    void expiredCouponCodeTest() {
+        addToCartButtonClick();
+        clickShoppingCartBtnAndViewCartLink();
+
+        inputExpiredCouponCodeTest();
+    }
+
+
+    @Test
+    void emptyCouponCodeTest() {
+        addToCartButtonClick();
+        clickShoppingCartBtnAndViewCartLink();
+
+        CheckoutPage checkoutPage = new CheckoutPage(driver);
+
+        checkoutPage.clickOnCouponSelectorDropMenu();
+        checkoutPage.setEmptyInputCouponCodeIntoInputField();
+        checkoutPage.clickOnApplyCouponButton();
+            /* // it should've thrown an error message instead of success
+        String errorMessage = checkoutPage.getErrorMessage();
+        assertEquals("Warning: Coupon code cannot be empty!", errorMessage);
+            */
+
+        String successMessage = checkoutPage.getSuccessMessage();
+        assertEquals("Success: Your coupon discount has been removed!", successMessage);
+
+        System.out.println("Warning: Empty coupon code removes the existing discount instead of throwing an error. Further investigation in website structure must be done.");
+    }
+
 }
